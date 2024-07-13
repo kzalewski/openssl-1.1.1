@@ -58,6 +58,8 @@ static const ERR_STRING_DATA PKCS12_str_functs[] = {
      "PKCS12_unpack_authsafes"},
     {ERR_PACK(ERR_LIB_PKCS12, PKCS12_F_PKCS12_UNPACK_P7DATA, 0),
      "PKCS12_unpack_p7data"},
+    {ERR_PACK(ERR_LIB_PKCS12, PKCS12_F_PKCS12_UNPACK_P7ENCDATA, 0),
+     "PKCS12_unpack_p7encdata"},
     {ERR_PACK(ERR_LIB_PKCS12, PKCS12_F_PKCS12_VERIFY_MAC, 0),
      "PKCS12_verify_mac"},
     {ERR_PACK(ERR_LIB_PKCS12, PKCS12_F_PKCS8_ENCRYPT, 0), "PKCS8_encrypt"},

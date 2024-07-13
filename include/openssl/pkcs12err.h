@@ -49,6 +49,7 @@ int ERR_load_PKCS12_strings(void);
 # define PKCS12_F_PKCS12_SET_MAC                          123
 # define PKCS12_F_PKCS12_UNPACK_AUTHSAFES                 130
 # define PKCS12_F_PKCS12_UNPACK_P7DATA                    131
+# define PKCS12_F_PKCS12_UNPACK_P7ENCDATA                 134
 # define PKCS12_F_PKCS12_VERIFY_MAC                       126
 # define PKCS12_F_PKCS8_ENCRYPT                           125
 # define PKCS12_F_PKCS8_SET0_PBE                          132
