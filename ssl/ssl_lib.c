@@ -3515,9 +3515,10 @@ void ssl_update_cache(SSL *s, int mode)
 
     /*
      * If the session_id_length is 0, we are not supposed to cache it, and it
-     * would be rather hard to do anyway :-)
+     * would be rather hard to do anyway :-). Also if the session has already
+     * been marked as not_resumable we should not cache it for later reuse.
      */
-    if (s->session->session_id_length == 0)
+    if (s->session->session_id_length == 0 || s->session->not_resumable)
         return;
 
     /*
@@ -5245,6 +5246,9 @@ int SSL_free_buffers(SSL *ssl)
     RECORD_LAYER *rl = &ssl->rlayer;
 
     if (RECORD_LAYER_read_pending(rl) || RECORD_LAYER_write_pending(rl))
+        return 0;
+
+    if (RECORD_LAYER_data_present(rl))
         return 0;
 
     RECORD_LAYER_release(rl);
