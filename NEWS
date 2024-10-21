@@ -5,6 +5,24 @@
   This file gives a brief overview of the major changes between each OpenSSL
   release. For more details please read the CHANGES file.
 
+  Major changes between OpenSSL 1.1.1za and OpenSSL 1.1.1zb [16 Oct 2024]
+
+      o Harden BN_GF2m_poly2arr against misuse
+
+  Major changes between OpenSSL 1.1.1y and OpenSSL 1.1.1za [26 Jun 2024]
+
+      o Fix SSL_select_next_proto
+
+  Major changes between OpenSSL 1.1.1x and OpenSSL 1.1.1y [27 May 2024]
+
+      o Only free the read buffers if we're not using them
+      o Fix unconstrained session cache growth in TLSv1.3
+
+  Major changes between OpenSSL 1.1.1w and OpenSSL 1.1.1x [25 Jan 2024]
+
+      o Add NULL checks where ContentInfo data can be NULL
+      o Make DH_check_pub_key() and DH_generate_key() safer yet
+
   Major changes between OpenSSL 1.1.1v and OpenSSL 1.1.1w [11 Sep 2023]
 
       o Fix POLY1305 MAC implementation corrupting XMM registers on Windows

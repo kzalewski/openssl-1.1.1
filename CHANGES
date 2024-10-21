@@ -7,6 +7,140 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1za and 1.1.1zb [16 Oct 2024]
+
+ *) Harden BN_GF2m_poly2arr against misuse
+
+    The BN_GF2m_poly2arr() function converts characteristic-2 field
+    (GF_{2^m}) Galois polynomials from a representation as a BIGNUM bitmask,
+    to a compact array with just the exponents of the non-zero terms.
+
+    These polynomials are then used in BN_GF2m_mod_arr() to perform modular
+    reduction.  A precondition of calling BN_GF2m_mod_arr() is that the
+    polynomial must have a non-zero constant term (i.e. the array has `0` as
+    its final element).
+
+    Internally, callers of BN_GF2m_poly2arr() did not verify that
+    precondition, and binary EC curve parameters with an invalid polynomial
+    could lead to out of bounds memory reads and writes in BN_GF2m_mod_arr().
+
+    The precondition is always true for polynomials that arise from the
+    standard form of EC parameters for characteristic-two fields (X9.62).
+    See the "Finite Field Identification" section of:
+
+    https://www.itu.int/ITU-T/formal-language/itu-t/x/x894/2018-cor1/ANSI-X9-62.html
+
+    The OpenSSL GF(2^m) code supports only the trinomial and pentanomial
+    basis X9.62 forms.
+
+    This commit updates BN_GF2m_poly2arr() to return `0` (failure) when
+    the constant term is zero (i.e. the input bitmask BIGNUM is not odd).
+
+    Additionally, the return value is made unambiguous when there is not
+    enough space to also pad the array with a final `-1` sentinel value.
+    The return value is now always the number of elements (including the
+    final `-1`) that would be filled when the output array is sufficiently
+    large.  Previously the same count was returned both when the array has
+    just enough room for the final `-1` and when it had only enough space
+    for non-sentinel values.
+
+    Finally, BN_GF2m_poly2arr() is updated to reject polynomials whose
+    degree exceeds `OPENSSL_ECC_MAX_FIELD_BITS`, this guards against
+    CPU exhausition attacks via excessively large inputs.
+
+    The above issues do not arise in processing X.509 certificates.  These
+    generally have EC keys from "named curves", and RFC5840 (Section 2.1.1)
+    disallows explicit EC parameters.  The TLS code in OpenSSL enforces this
+    constraint only after the certificate is decoded, but, even if explicit
+    parameters are specified, they are in X9.62 form, which cannot represent
+    problem values as noted above.
+
+    (CVE-2024-9143)
+    [Viktor Dukhovni]
+
+
+ Changes between 1.1.1y and 1.1.1za [26 Jun 2024]
+
+ *) Fix SSL_select_next_proto
+
+    Ensure that the provided client list is non-NULL and starts with a valid
+    entry. When called from the ALPN callback the client list should already
+    have been validated by OpenSSL so this should not cause a problem. When
+    called from the NPN callback the client list is locally configured and
+    will not have already been validated. Therefore SSL_select_next_proto
+    should not assume that it is correctly formatted.
+
+    We implement stricter checking of the client protocol list. We also do the
+    same for the server list while we are about it.
+
+    (CVE-2024-5535)
+    [Matt Caswell]
+
+
+ Changes between 1.1.1x and 1.1.1y [27 May 2024]
+
+ *) Only free the read buffers if we're not using them
+
+    If we're part way through processing a record, or the application has
+    not released all the records then we should not free our buffer because
+    they are still needed.
+
+    (CVE-2024-4741)
+    [Matt Caswell]
+    [Watson Ladd]
+
+ *) Fix unconstrained session cache growth in TLSv1.3
+
+    In TLSv1.3 we create a new session object for each ticket that we send.
+    We do this by duplicating the original session. If SSL_OP_NO_TICKET is in
+    use then the new session will be added to the session cache. However, if
+    early data is not in use (and therefore anti-replay protection is being
+    used), then multiple threads could be resuming from the same session
+    simultaneously. If this happens and a problem occurs on one of the threads,
+    then the original session object could be marked as not_resumable. When we
+    duplicate the session object this not_resumable status gets copied into the
+    new session object. The new session object is then added to the session
+    cache even though it is not_resumable.
+
+    Subsequently, another bug means that the session_id_length is set to 0 for
+    sessions that are marked as not_resumable - even though that session is
+    still in the cache. Once this happens the session can never be removed from
+    the cache. When that object gets to be the session cache tail object the
+    cache never shrinks again and grows indefinitely.
+
+    (CVE-2024-2511)
+    [Matt Caswell]
+
+
+ Changes between 1.1.1w and 1.1.1x [25 Jan 2024]
+
+ *) Add NULL checks where ContentInfo data can be NULL
+
+    PKCS12 structures contain PKCS7 ContentInfo fields. These fields are
+    optional and can be NULL even if the "type" is a valid value. OpenSSL
+    was not properly accounting for this and a NULL dereference can occur
+    causing a crash.
+
+    (CVE-2024-0727)
+    [Matt Caswell]
+
+ *) Make DH_check_pub_key() and DH_generate_key() safer yet
+
+    We already check for an excessively large P in DH_generate_key(), but not in
+    DH_check_pub_key(), and none of them check for an excessively large Q.
+
+    This change adds all the missing excessive size checks of P and Q.
+
+    It's to be noted that behaviours surrounding excessively sized P and Q
+    differ.  DH_check() raises an error on the excessively sized P, but only
+    sets a flag for the excessively sized Q.  This behaviour is mimicked in
+    DH_check_pub_key().
+
+    (CVE-2024-5678)
+    [Richard Levitte]
+    [Hugo Landau]
+
+
  Changes between 1.1.1v and 1.1.1w [11 Sep 2023]
 
  *) Fix POLY1305 MAC implementation corrupting XMM registers on Windows.
