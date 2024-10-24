@@ -31,8 +31,7 @@ while (<FD>) {
 		$version .= chr( ord('a') + $v4 - 1 );
 	    }
 	    else {
-		$version .= chr( ord('z') );
-		$version .= chr( ord('a') + $v4 - 26 );
+		$version .= 'z' . chr( ord('a') + $v4 - 26 );
 	    }
         } elsif ( $beta == 0 ) {
             $version .= "-dev";
