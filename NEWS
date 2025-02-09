@@ -5,6 +5,11 @@
   This file gives a brief overview of the major changes between each OpenSSL
   release. For more details please read the CHANGES file.
 
+  Major changes between OpenSSL 1.1.1zb and OpenSSL 1.1.1zb_p2 [20 Jan 2025]
+
+      o Fix version number for versions that require two letters
+      o Fix timing side-channel in ECDSA signature computation
+
   Major changes between OpenSSL 1.1.1za and OpenSSL 1.1.1zb [16 Oct 2024]
 
       o Harden BN_GF2m_poly2arr against misuse

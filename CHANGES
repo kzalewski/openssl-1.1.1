@@ -7,6 +7,31 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zb_p1 and 1.1.1zb_p2 [20 Jan 2025]
+
+ *) Fix timing side-channel in ECDSA signature computation
+
+    There is a timing signal of around 300 nanoseconds when the top word of
+    the inverted ECDSA nonce value is zero. This can happen with significant
+    probability only for some of the supported elliptic curves. In particular
+    the NIST P-521 curve is affected. To be able to measure this leak, the
+    attacker process must either be located in the same physical computer or
+    must have a very fast network connection with low latency.
+
+    Attacks on ECDSA nonce are also known as Minerva attack.
+
+    [CVE-2024-13176]
+    [Tomas Mraz]
+
+
+ Changes between 1.1.1zb and 1.1.1zb_p1 [24 Oct 2024]
+
+ *) Fix the version number for versions that require two letters.
+
+    [V Petrischew]
+    [Ken Zalewski]
+
+
  Changes between 1.1.1za and 1.1.1zb [16 Oct 2024]
 
  *) Harden BN_GF2m_poly2arr against misuse
