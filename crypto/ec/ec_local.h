@@ -15,6 +15,7 @@
 #include <openssl/bn.h>
 #include "internal/refcount.h"
 #include "crypto/ec.h"
+#include "crypto/bn.h"
 
 #if defined(__SUNPRO_C)
 # if __SUNPRO_C >= 0x520
