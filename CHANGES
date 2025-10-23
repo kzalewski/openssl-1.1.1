@@ -9,15 +9,19 @@
 
  Changes between 1.1.1zb_p2 and 1.1.1zd [30 Sep 2025]
 
- *) Fix Out-of-bounds read & write in RFC 3211 KEK Unwrap
+ *) Fix incorrect check of unwrapped key size in kek_unwrap_key()
 
-    the consequences of a successful exploit of this vulnerability could be 
-    severe, the probability that the attacker would be able to perform it 
-    is low. Besides, password based (PWRI) encryption support in CMS messages
-    is very rarely used.
+    The check is off by 8 bytes so it is possible to overread by up to 8 bytes
+    and overwrite up to 4 bytes.
 
-    [CVE-2025-9230]
+    Although the consequences of a successful exploit of this vulnerability
+    could be severe, the probability that the attacker would be able to perform
+    it is low. Besides, password based (PWRI) encryption support in CMS
+    messages is very rarely used.
+
+    (CVE-2025-9230)
     [Stanislav Fort]
+    [Viktor Dukhovni]
 
 
  Changes between 1.1.1zb_p1 and 1.1.1zb_p2 [20 Jan 2025]
@@ -33,7 +37,7 @@
 
     Attacks on ECDSA nonce are also known as Minerva attack.
 
-    [CVE-2024-13176]
+    (CVE-2024-13176)
     [Tomas Mraz]
 
 

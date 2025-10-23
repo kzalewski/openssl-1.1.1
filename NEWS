@@ -7,7 +7,7 @@
 
   Major changes between 1.1.1zb_p2 and 1.1.1zd [30 Sep 2025]
 
-      o Fix Out-of-bounds read & write in RFC 3211 KEK Unwrap (CVE-2025-9230)
+      o Fix out-of-bounds read & write in RFC 3211 KEK Unwrap (CVE-2025-9230)
 
   Major changes between OpenSSL 1.1.1zb and OpenSSL 1.1.1zb_p2 [20 Jan 2025]
 
