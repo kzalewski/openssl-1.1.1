@@ -7,6 +7,19 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zb_p2 and 1.1.1zd [30 Sep 2025]
+
+ *) Fix Out-of-bounds read & write in RFC 3211 KEK Unwrap
+
+    the consequences of a successful exploit of this vulnerability could be 
+    severe, the probability that the attacker would be able to perform it 
+    is low. Besides, password based (PWRI) encryption support in CMS messages
+    is very rarely used.
+
+    [CVE-2025-9230]
+    [Stanislav Fort]
+
+
  Changes between 1.1.1zb_p1 and 1.1.1zb_p2 [20 Jan 2025]
 
  *) Fix timing side-channel in ECDSA signature computation
