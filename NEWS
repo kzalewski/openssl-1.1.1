@@ -5,6 +5,22 @@
   This file gives a brief overview of the major changes between each OpenSSL
   release. For more details please read the CHANGES file.
 
+  Major changes between 1.1.1zd and 1.1.1ze [27 Jan 2026]
+
+      o Fixed Heap out-of-bounds write in BIO_f_linebuffer on short writes.
+        (CVE-2025-68160)
+      o Fixed Unauthenticated/unencrypted trailing bytes with low-level OCB
+        function calls. (CVE-2025-69418)
+      o Fixed Out of bounds write in PKCS12_get_friendlyname() UTF-8 conversion.
+        (CVE-2025-69419)
+      o Fixed Missing ASN1_TYPE validation in TS_RESP_verify_response()
+        function. (CVE-2025-69420)
+      o Fixed NULL Pointer Dereference in PKCS12_item_decrypt_d2i_ex() function.
+        (CVE-2025-69421)
+      o Fixed Missing ASN1_TYPE validation in PKCS#12 parsing. (CVE-2026-22795)
+      o Fixed ASN1_TYPE Type Confusion in the PKCS7_digest_from_attributes()
+        function. (CVE-2026-22796)
+
   Major changes between 1.1.1zb_p2 and 1.1.1zd [30 Sep 2025]
 
       o Fix out-of-bounds read & write in RFC 3211 KEK Unwrap (CVE-2025-9230)
