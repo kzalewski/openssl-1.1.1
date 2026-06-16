@@ -5,6 +5,17 @@
   This file gives a brief overview of the major changes between each OpenSSL
   release. For more details please read the CHANGES file.
 
+  Major changes between 1.1.1zg and 1.1.1zh [9 Jun 2026]
+
+      o Fixed heap use-after-free in `PKCS7_verify()`. (CVE-2026-45447)
+      o Fixed possible heap buffer overflow in ASN.1 multibyte string
+        conversion. (CVE-2026-7383)
+      o Fixed out-of-bounds read in CMS password-based decryption.
+        (CVE-2026-9076)
+      o Fixed heap buffer over-read in ASN.1 content parsing. (CVE-2026-34180)
+      o Fixed possible NULL dereference in password-dased CMS decryption.
+        (CVE-2026-42766)
+
   Major changes between 1.1.1ze and 1.1.1zg [7 Apr 2026]
 
       o Fixed potential use-after-free in DANE client code. (CVE-2026-28387)

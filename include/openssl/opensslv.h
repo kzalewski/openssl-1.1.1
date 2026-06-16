@@ -39,8 +39,8 @@ extern "C" {
  * (Prior to 0.9.5a beta1, a different scheme was used: MMNNFFRBB for
  *  major minor fix final patch/beta)
  */
-# define OPENSSL_VERSION_NUMBER  0x1010120fL
-# define OPENSSL_VERSION_TEXT    "OpenSSL 1.1.1zg  7 Apr 2026"
+# define OPENSSL_VERSION_NUMBER  0x1010121fL
+# define OPENSSL_VERSION_TEXT    "OpenSSL 1.1.1zh  9 Jun 2026"
 
 /*-
  * The macros below are to be used for shared library (.so, .dll, ...)

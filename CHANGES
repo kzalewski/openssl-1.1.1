@@ -7,6 +7,92 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zg and 1.1.1zh [9 Jun 2026]
+
+ *) Fixed heap use-after-free in `PKCS7_verify()`.
+    Severity: High
+
+    Issue summary: A specially crafted PKCS#7 or S/MIME signed message could
+    trigger a use-after-free during PKCS#7 signature verification.
+
+    Impact summary: A use-after-free may result in process crashes, heap
+    corruption, or, potentially, remote code execution.
+
+    Reported by: Thai Duong (Calif.io in collaboration with Claude
+    and Anthropic Research).
+
+    (CVE-2026-45447)
+    [Igor Ustinov]
+
+ *) Fixed possible heap buffer overflow in ASN.1 multibyte string conversion.
+
+    Severity: Low
+
+    Issue summary: A signed integer overflow when sizing the destination
+    buffer for Unicode output in `ASN1_mbstring_ncopy()` can lead to a heap
+    buffer overflow.
+
+    Impact summary: A heap buffer overflow may lead to a crash or possibly
+    attacker controlled code execution or other undefined behaviour.
+
+    Reported by: Zehua Qiao and Jinwen He.
+
+    (CVE-2026-7383)
+    [Viktor Dukhovni]
+
+ *) Fixed out-of-bounds read in CMS password-based decryption.
+
+    Severity: Low
+
+    Issue summary: When CMS password-based decryption ([RFC 3211]/PWRI key
+    unwrap) processes attacker-supplied CMS data, an attacker-chosen stream-mode
+    KEK cipher can trigger a heap out-of-bounds read in `kek_unwrap_key()`.
+
+    Impact summary: A heap buffer over-read may trigger a crash, which leads
+    to Denial of Service for an application if the input buffer ends at a memory
+    page boundary and the following page is unmapped.  There is no information
+    disclosure, as the over-read bytes are not revealed to the attacker.
+
+    Reported by: Bhabani Sankar Das and Haruki Oyama (Waseda University).
+
+    (CVE-2026-9076)
+    [Nikola Pajkovsky]
+
+ *) Fixed heap buffer over-read in ASN.1 content parsing.
+
+    Severity: Low
+
+    Issue summary: Parsing a crafted DER-encoded ASN.1 structure with a
+    primitive element whose content exceeds 2 gigabytes in length may cause a
+    heap buffer over-read on 64-bit Unix and Unix-like platforms.
+
+    Impact summary: The heap buffer over-read may crash the application (Denial
+    of Service) or to load into the decoded ASN.1 object contents of memory
+    beyond the end of the input buffer.  More typically, such ASN.1 elements
+    would instead be truncated.
+
+    Reported by: Frank Buss.
+
+    (CVE-2026-34180)
+    [Viktor Dukhovni]
+
+ *) Fixed possible NULL dereference in password-dased CMS decryption.
+
+    Severity: Low
+
+    Issue summary: A specially crafted password-encrypted CMS message
+    could trigger a NULL pointer dereference during CMS decryption.
+
+    Impact summary: This NULL pointer dereference could lead to an application
+    crash and a Denial of Service.
+
+    Reported by: Mayank Jangid, Kushal Khemka, Hari Priandana,
+    Bhabani Sankar Das, and Qifan Zhang (Palo Alto Networks).
+
+    (CVE-2026-42766)
+    [Igor Ustinov]
+
+
  Changes between 1.1.1ze and 1.1.1zg [7 Apr 2026]
 
  *) Fixed potential use-after-free in DANE client code.
