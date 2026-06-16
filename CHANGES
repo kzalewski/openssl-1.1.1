@@ -10,6 +10,7 @@
  Changes between 1.1.1zg and 1.1.1zh [9 Jun 2026]
 
  *) Fixed heap use-after-free in `PKCS7_verify()`.
+
     Severity: High
 
     Issue summary: A specially crafted PKCS#7 or S/MIME signed message could
