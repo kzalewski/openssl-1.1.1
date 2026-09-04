@@ -70,7 +70,7 @@ void DTLS_RECORD_LAYER_clear(RECORD_LAYER *rl)
 
     while ((item = pqueue_pop(d->unprocessed_rcds.q)) != NULL) {
         rdata = (DTLS1_RECORD_DATA *)item->data;
-        OPENSSL_free(rdata->rbuf.buf);
+        OPENSSL_free(rdata->packet);
         OPENSSL_free(item->data);
         pitem_free(item);
     }
@@ -158,12 +158,12 @@ int dtls1_buffer_record(SSL *s, record_pqueue *queue, unsigned char *priority)
         return -1;
     }
 
-    rdata->packet = s->rlayer.packet;
+    /*
+     * Take a copy of just this record's on-wire bytes (header + ciphertext)
+     * rather than the whole (much larger) read buffer. The live rl->rbuf is
+     * left untouched and continues to be used for subsequent reads.
+     */
     rdata->packet_length = s->rlayer.packet_length;
-    memcpy(&(rdata->rbuf), &s->rlayer.rbuf, sizeof(SSL3_BUFFER));
-    memcpy(&(rdata->rrec), &s->rlayer.rrec, sizeof(SSL3_RECORD));
-
-    item->data = rdata;
 
 #ifndef OPENSSL_NO_SCTP
     /* Store bio_dgram_sctp_rcvinfo struct */
@@ -175,22 +175,18 @@ int dtls1_buffer_record(SSL *s, record_pqueue *queue, unsigned char *priority)
     }
 #endif
 
-    s->rlayer.packet = NULL;
-    s->rlayer.packet_length = 0;
-    memset(&s->rlayer.rbuf, 0, sizeof(s->rlayer.rbuf));
-    memset(&s->rlayer.rrec, 0, sizeof(s->rlayer.rrec));
-
-    if (!ssl3_setup_buffers(s)) {
-        /* SSLfatal() already called */
+    rdata->packet = OPENSSL_memdup(s->rlayer.packet, s->rlayer.packet_length);
+    if (rdata->packet == NULL) {
         OPENSSL_free(rdata->rbuf.buf);
         OPENSSL_free(rdata);
         pitem_free(item);
+        SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_DTLS1_BUFFER_RECORD, ERR_R_INTERNAL_ERROR);
         return -1;
     }
 
     if (pqueue_insert(queue->q, item) == NULL) {
         /* Must be a duplicate so ignore it */
-        OPENSSL_free(rdata->rbuf.buf);
+        OPENSSL_free(rdata->packet);
         OPENSSL_free(rdata);
         pitem_free(item);
     }
